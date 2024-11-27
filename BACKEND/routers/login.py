@@ -1,59 +1,90 @@
 from flask import Flask, request, jsonify
 import mysql.connector
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask_cors import CORS  # Importar CORS
 
 app = Flask(__name__)
 
-# Configuración de la conexión
-def obtener_conexion():
-    return mysql.connector.connect(
-        user='root',
-        password='root',
-        host='localhost',
-        database='elecciones',
-        port='3306'
-    )
+# Habilitar CORS para todas las rutas
+CORS(app)  # Permite solicitudes desde cualquier origen
 
-# Ruta para login
-@app.route('/login', methods=['POST'])
-def login():
+# O, si prefieres habilitar CORS solo para tu frontend:
+# CORS(app, origins="http://localhost:5173")
+
+# Conectar a la base de datos
+conexion = mysql.connector.connect(
+    user='root',
+    password='root',
+    host='localhost',
+    database='elecciones',
+    port='3306'
+)
+
+# Función para verificar las credenciales
+def verificar_credenciales(correo, dni):
+    # Crear un cursor para ejecutar la consulta
+    cursor = conexion.cursor()
+
+    # Limpiar el correo (eliminar posibles espacios al principio y al final)
+    correo = correo.strip()
+
+    # Asegurarse de que el DNI sea un número entero
     try:
-        # Obtener los datos del cuerpo de la solicitud (correo y dni)
-        correo = request.json.get('correo')
-        dni = request.json.get('dni')
+        dni = int(dni)
+    except ValueError:
+        return {"message": "El DNI debe ser un número válido"}
 
-        # Verificar que los datos sean proporcionados
-        if not correo or not dni:
-            return jsonify({'message': 'Correo y DNI son requeridos'}), 400
-        
-        # Conexión a la base de datos
-        conexion = obtener_conexion()
-        cursor = conexion.cursor()
+    # Imprimir los parámetros que estamos usando en la consulta
+    print(f"Ejecutando consulta con: correo = {correo}, dni = {dni}")  # Depuración
 
-        # Consulta para obtener el alumno por correo y DNI
-        query = "SELECT * FROM estudiantes_fisi WHERE correo = %s AND dni = %s"
-        cursor.execute(query, (correo, dni))
+    # Consulta SQL para verificar el correo y DNI
+    query = """
+    SELECT * FROM estudiantes_fisi
+    WHERE correo LIKE %s AND dni = %s
+    """
+
+    try:
+        # Ejecutar la consulta pasando los parámetros de forma segura
+        cursor.execute(query, ('%' + correo + '%', dni))
+
+        # Obtener el primer resultado
         resultado = cursor.fetchone()
 
-        # Si no se encuentra al alumno, responder con error
-        if not resultado:
-            return jsonify({'message': 'Correo o DNI incorrectos'}), 401
-
-        # Si el alumno existe, obtener el hash de la contraseña almacenada
-        # Asumimos que el hash de la contraseña está en la columna 'estado' (puedes ajustarlo a tu estructura real)
-        hashed_password = resultado[5]  # Supongamos que 'estado' tiene el hash de la contraseña (ajusta según tu estructura)
-
-        # Comparar el hash almacenado con la contraseña proporcionada por el usuario (suponiendo que la contraseña está en 'dni')
-        if check_password_hash(hashed_password, str(dni)):  # Si el DNI es la contraseña
-            return jsonify({'message': 'Login exitoso', 'alumno': resultado[1]}), 200
+        if resultado:
+            # Si se encontró el registro, la autenticación es exitosa
+            print("Credenciales correctas.")  # Depuración
+            return {
+                "message": "Correo y DNI correctos",
+                "user_id": resultado[0],  # Asumiendo que el ID de usuario está en la primera columna
+            }
         else:
-            return jsonify({'message': 'Contraseña incorrecta'}), 401
-    
+            # Si no se encuentra el registro o las credenciales son incorrectas
+            print("No se encontró el registro en la base de datos.")  # Depuración
+            return {"message": "Correo o DNI incorrectos"}
     except mysql.connector.Error as err:
-        return jsonify({'message': f'Error en la base de datos: {err}'}), 500
+        print(f"Error en la consulta: {err}")  # Depuración
+        return {"message": f"Error en la consulta: {err}"}
     finally:
+        # Cerrar el cursor
         cursor.close()
-        conexion.close()
+
+# Endpoint para el login
+@app.route('/login', methods=['POST'])
+def login():
+    # Obtener datos del formulario
+    correo = request.form.get('username')
+    dni = request.form.get('password')
+
+    print(f"Correo recibido: {correo}, DNI recibido: {dni}")  # Agregar para depuración
+
+    if not correo or not dni:
+        return jsonify({"message": "Correo y DNI son necesarios"}), 400
+
+    # Verificar las credenciales
+    resultado = verificar_credenciales(correo, dni)
+
+    print(f"Resultado de la verificación: {resultado}")  # Depuración
+
+    return jsonify(resultado)
 
 if __name__ == '__main__':
     app.run(debug=True)
