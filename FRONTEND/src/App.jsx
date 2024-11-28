@@ -16,7 +16,6 @@ function App() {
   return (
     <Router>
       <div>
-        <h1>Hola Mundo</h1>
         <Routes>
           <Route path="/" element={isAuthenticated ? <Navigate to="/home" /> : <Navigate to="/login" />} />
           <Route path="/login" element={<Login />} />

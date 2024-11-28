@@ -13,8 +13,8 @@ import { IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from '../services/AuthContext'; // Ruta correcta desde 'components/Login.jsx'
-
-
+import './Login.css';
+//logo fisi: https://sistemas.unmsm.edu.pe/site/images/logo-fisi-header-240x105.png
 const message = ['Usuario logueado correctamente', 'Error, Intente de nuevo'];
 
 export default function Login() {
@@ -26,41 +26,35 @@ export default function Login() {
     const navigate = useNavigate();
     const { setIsAuthenticated, setUserId, userId } = useContext(AuthContext); // Obtener userId correctamente
 
-    // Login.jsx (lo que ya tienes es correcto, solo asegúrate de que navigate lleve a '/home')
     const handleCloseAlert = () => {
         setOpenAlert(false);
         if (!error) {
-            // Si el login fue exitoso, redirige al home
             navigate('/home');  // Redirige a la página Home
         }
     };
 
-
-    // Login.jsx
     const handleSubmit = (event) => {
         event.preventDefault();
     
         const formData = new FormData();
-        formData.append("username", correo);  // El correo que el usuario ingresó
-        formData.append("password", contraseña);  // El DNI (contraseña en tu caso)
+        formData.append("username", correo);  
+        formData.append("password", contraseña);  
     
         fetch('http://localhost:5000/login', {
         method: 'POST',
         body: formData
         })
-        .then(res => res.json())  // Cambio aquí, usamos .json() para obtener la respuesta como un objeto JSON
+        .then(res => res.json())
         .then(data => {
         if (data.message === 'Correo y DNI correctos') {
-            // Si la respuesta es correcta, actualiza el estado de autenticación y redirige
-            setUserId(data.user_id);  // Usar el ID que devuelve el backend
-            setIsAuthenticated(true);  // Asegúrate de que esto se actualice correctamente
+            setUserId(data.user_id); 
+            setIsAuthenticated(true); 
             setError(false);
             setErrorMessage("");
             setOpenAlert(true);
         } else {
-            // Si la respuesta es un error
             setError(true);
-            setErrorMessage(data.message);  // Mostrar el mensaje de error
+            setErrorMessage(data.message); 
             setOpenAlert(true);
         }
         })
@@ -70,14 +64,14 @@ export default function Login() {
         setErrorMessage("Error al conectar con el servidor");
         setOpenAlert(true);
         });
-    };  
+    };
 
     const handleInputChange = (e, setter) => {
         setter(e.target.value);
     };
 
     return (
-        <Grid container component="main" sx={{ height: { md: '100vh', xs: '100vh' } }}>
+        <Grid>
             <Dialog
                 open={openAlert}
                 onClose={handleCloseAlert}
@@ -98,78 +92,127 @@ export default function Login() {
             </Dialog>
 
             <CssBaseline />
-            <Grid
-                item
-                xs={false}
-                sm={4}
-                md={7}
-                sx={{
-                    backgroundImage: 'url(https://sum.unmsm.edu.pe/alumnoWebSum/image/login-sum.jpg)',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundColor: (t) => t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'top',
-                }}
-            />
-            <Link to={"/"}>
-                <IconButton sx={{ position: 'absolute', backgroundColor: { sm: '#DDE2E5' }, color: 'gray', m: 2 }}>
-                    <ArrowBackIcon />
-                </IconButton>
-            </Link>
 
-            <Grid item xs={12} sm={8} md={5} component={Paper} square>
-                <Box
+            <div className="login-card-container">
+                <Typography component="h1" variant="h5">
+                    Elecciones 2024
+                </Typography>
+                <div class="image">
+                    <img src="https://www.web.onpe.gob.pe/portal/imagenes/logo-onpe.png" class="img-responsive"/> 
+                </div>
+                
+                <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+                <TextField
+                    error={correo.length === 0}
+                    helperText={correo.length === 0 ? "Correo no válido" : ""}
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="correo"
+                    label="Correo"
+                    name="correo"
+                    autoComplete="email"
+                    autoFocus
+                    value={correo}
+                    onChange={(e) => handleInputChange(e, setCorreo)}
                     sx={{
-                        my: 4,
-                        mx: 4,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
+                        // Estilos para asegurar que el borde y el texto son blancos siempre
+                        '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                                borderColor: 'white', // El borde siempre será blanco
+                            },
+                            '& input': {
+                                color: 'white', // El texto dentro del input siempre será blanco
+                            },
+                        },
+                        '& .MuiFormLabel-root': {
+                            color: 'white', // La etiqueta siempre será blanca
+                        },
+                        '& .MuiFormHelperText-root': {
+                            color: 'white', // El texto del helper también será blanco
+                        },
+                        '& .MuiFormLabel-root .Mui-required': {
+                            color: 'white', // Cambiar el color del asterisco a blanco
+                        },
+                        // Cambios especiales cuando hay error
+                        '& .MuiOutlinedInput-root.Mui-error': {
+                            '& fieldset': {
+                                borderColor: 'white', // El borde permanece blanco incluso en error
+                            },
+                            '& input': {
+                                color: 'white', // El texto permanece blanco incluso en error
+                            },
+                        },
+                        '& .MuiFormLabel-root.Mui-error': {
+                            color: 'white', // La etiqueta se pone blanca en caso de error
+                        },
+                        '& .MuiFormHelperText-root.Mui-error': {
+                            color: 'white', // El texto del helper también será blanco en caso de error
+                        },
                     }}
-                >
-                    <Typography component="h1" variant="h5">
-                        Iniciar sesión
-                    </Typography>
-                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
-                        <TextField
-                            error={correo.length === 0}
-                            helperText={correo.length === 0 ? "Correo no válido" : ""}
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="correo"
-                            label="Correo"
-                            name="correo"
-                            autoComplete="email"
-                            autoFocus
-                            value={correo}
-                            onChange={(e) => handleInputChange(e, setCorreo)}
-                        />
-                        <TextField
-                            error={contraseña.length === 0}
-                            helperText={contraseña.length === 0 ? "Contraseña no válida" : ""}
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="contraseña"
-                            label="Contraseña"
-                            type="password"
-                            id="contraseña"
-                            autoComplete="current-password"
-                            value={contraseña}
-                            onChange={(e) => handleInputChange(e, setContraseña)}
-                        />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{ my: 2, backgroundColor: '#4caf50', '&:hover': { backgroundColor: '#66bb6a' } }}
-                        >
-                            Verificar
-                        </Button>
-                    </Box>
+                />
+
+                <TextField
+                    error={contraseña.length === 0}
+                    helperText={contraseña.length === 0 ? "Contraseña no válida" : ""}
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="contraseña"
+                    label="Contraseña"
+                    type="password"
+                    id="contraseña"
+                    autoComplete="current-password"
+                    value={contraseña}
+                    onChange={(e) => handleInputChange(e, setContraseña)}
+                    sx={{
+                        // Estilos para asegurar que el borde y el texto son blancos siempre
+                        '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                                borderColor: 'white', // El borde siempre será blanco
+                            },
+                            '& input': {
+                                color: 'white', // El texto dentro del input siempre será blanco
+                            },
+                        },
+                        '& .MuiFormLabel-root': {
+                            color: 'white', // La etiqueta siempre será blanca
+                        },
+                        '& .MuiFormHelperText-root': {
+                            color: 'white', // El texto del helper también será blanco
+                        },
+                        '& .MuiFormLabel-root .Mui-required': {
+                            color: 'white', // Cambiar el color del asterisco a blanco
+                        },
+                        // Cambios especiales cuando hay error
+                        '& .MuiOutlinedInput-root.Mui-error': {
+                            '& fieldset': {
+                                borderColor: 'white', // El borde permanece blanco incluso en error
+                            },
+                            '& input': {
+                                color: 'white', // El texto permanece blanco incluso en error
+                            },
+                        },
+                        '& .MuiFormLabel-root.Mui-error': {
+                            color: 'white', // La etiqueta se pone blanca en caso de error
+                        },
+                        '& .MuiFormHelperText-root.Mui-error': {
+                            color: 'white', // El texto del helper también será blanco en caso de error
+                        },
+                    }}
+                />
+
+                    <Button
+                        type="submit"
+                        fullWidth
+                    >
+                        Iniciar Sesión
+                    </Button>
+                    <div class="image1">
+                        <img src="https://sistemas.unmsm.edu.pe/site/images/logo-fisi-header-240x105.png" class="img-responsive"/>
+                    </div>
                 </Box>
-            </Grid>
+            </div>
         </Grid>
     );
 }

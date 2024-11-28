@@ -1,0 +1,110 @@
+/* Estilos generales para la aplicación */
+body {
+    overflow-y: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    background-image: url('https://sum.unmsm.edu.pe/assets/img/sliders/capacitacion2.jpg');
+    background-attachment: fixed;
+    background-clip: border-box;
+    background-color: rgba(0, 0, 0, 0);
+    background-origin: padding-box;
+    background-position-x: 50%;
+    background-position-y: 50%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    box-sizing: border-box;
+    outline-style: none;
+}
+
+/* Estilo del contenedor principal */
+.login-card-container {
+    background: rgba(98, 21, 24, 0.5); /* Fondo semi-transparente con un tono verde */
+    padding: 2em; /* Relleno interno de 2em */
+    display: flex; /* Flexbox para alinear los elementos */
+    flex-direction: column; /* Organiza los elementos en columna */
+    border-radius: 30px; /* Bordes redondeados */
+    box-shadow: 0 0 15px rgb(46, 8, 9); /* Sombra azul suave */
+    gap: 10px; /* Reducir el espacio de 20px a 10px entre los elementos */
+    max-width: 364px; /* Establece un ancho máximo de 550.91px */
+    width: 364px; /* Ancho fijo de 550.91px */
+    height: 550.91px; /* Alto fijo de 364px */
+    margin-left: auto; /* Alinea el contenedor al centro horizontal */
+    margin-right: auto; /* Alinea el contenedor al centro horizontal */
+    margin-top: 50px; /* Ajusta el espacio superior */
+    margin-bottom: 50px; /* Ajusta el espacio inferior */
+}
+
+/* Estilo de los títulos */
+.login-card-container h1 {
+    text-align: center !important;
+    font-weight: bolder !important;
+    font-size: 2rem;
+    color: #ffffff;
+    margin-bottom: 10px; /* Reducir el espacio inferior del título */
+}
+
+/* Estilo para los botones */
+.login-card-container button {
+    padding: 10px;
+    background: #621518;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-weight: 600;
+    text-transform: none;
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+/* Estilos para la lista de íconos */
+.login-card-container ul {
+    list-style: none;
+    padding: 0;
+}
+
+.login-card-container ul li {
+    margin-bottom: 15px;
+    font-size: 18px;
+    color: #34495e;
+}
+
+.login-card-container ul li a {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.login-card-container ul li a:hover {
+    color: #2980b9;
+}
+
+.image img {
+    max-width: 240px; /* Establece un ancho máximo de 550.91px */
+    width: 240px; /* Ancho fijo de 550.91px */
+    height: 105px;
+    vertical-align: middle;
+    border-style: none;
+    margin-left: 30px; /* Alinea el contenedor al centro horizontal */
+    margin-right: auto; /* Alinea el contenedor al centro horizontal */
+    margin-top: -30px; /* Ajusta el espacio superior */
+    margin-bottom: 0px; /* Ajusta el espacio inferior */
+}
+
+.image1 img {
+    max-width: 240px; /* Establece un ancho máximo de 550.91px */
+    width: 240px; /* Ancho fijo de 550.91px */
+    height: 105px;
+    vertical-align: middle;
+    border-style: none;
+    margin-left: 30px; /* Alinea el contenedor al centro horizontal */
+    margin-right: auto; /* Alinea el contenedor al centro horizontal */
+    margin-top: 0px; /* Ajusta el espacio superior */
+    margin-bottom: 0px; /* Ajusta el espacio inferior */
+}
+
