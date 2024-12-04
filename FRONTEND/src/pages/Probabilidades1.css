@@ -1,0 +1,90 @@
+/* Estilos generales para el Home */
+.home-container {
+    display: flex;
+    height: 90vh;
+    width: 90vw;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.85);
+}
+
+/* Sidebar */
+.sidebar {
+    width: 20%;
+    background-color: rgba(98, 21, 24, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border-right: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.sidebar h2 {
+    margin: 10px 0;
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+.sidebar .onpe-logo {
+    width: 80%;
+    margin-bottom: 20px;
+    
+}
+
+.sidebar-button {
+    width: 100%;
+    padding: 10px 15px;
+    margin: 10px 0;
+    background-color: #6c63ff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.sidebar-button:hover {
+    background-color: #524daf;
+    transform: scale(1.05);
+}
+
+/* Main content */
+.main-content {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Card container */
+.card-container {
+    display: flex;
+    justify-content: center;
+    gap: 100px;  /* Espacio más grande entre las tarjetas */
+    margin-bottom: 20px;
+}
+
+.navigation-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .btn-navigation {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .btn-navigation:hover {
+    background-color: #0056b3;
+  }

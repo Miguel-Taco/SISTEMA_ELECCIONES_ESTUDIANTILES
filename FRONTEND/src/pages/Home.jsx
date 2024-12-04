@@ -1,6 +1,8 @@
 import React, { useContext, useState } from "react";
+import { Link } from "react-router-dom"; // Importar Link de react-router-dom
 import { AuthContext } from "../services/AuthContext"; // Contexto para obtener el userId
 import "./Home.css";
+import Probabilidades from './Probabilidades1'; // Importación correcta
 import CODIGO_FISIANO_LOGO from "../imagenes/CODIGO_FISIANO.png";
 import HAGAMOS from "../imagenes/HAGAMOS.png";
 import INNOVA from "../imagenes/INOVA_FISI.png";
@@ -52,8 +54,12 @@ const Home = () => {
       <div className="sidebar">
         <h2>Elecciones 2024</h2>
         <img src={ONPE} alt="ONPE" className="onpe-logo" />
-        <button className="sidebar-button">Elección de candidato</button>
-        <button className="sidebar-button">Probabilidades</button>
+        <Link to="/home">
+          <button className="sidebar-button">Elección de candidato</button>
+        </Link>
+        <Link to="/home/probabilidades1">
+          <button className="sidebar-button">Probabilidades</button>
+        </Link>
       </div>
       <div className="main-content">
         <div className="card-container">
@@ -64,8 +70,8 @@ const Home = () => {
           >
             <img
               src={INNOVA}
-              alt="Innova FISI"
-              className="card-logo_innova"
+              alt="Idea FISI"
+              className="card-logo_idea"
             />
             <div className="text">Ver Propuestas</div>
           </button>

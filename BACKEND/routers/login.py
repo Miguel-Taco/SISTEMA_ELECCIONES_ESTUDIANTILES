@@ -16,7 +16,6 @@ conexion = mysql.connector.connect(
     port='3306'
 )
 
-# Verificar las credenciales
 def verificar_credenciales(correo, dni):
     cursor = conexion.cursor()
     correo = correo.strip()
@@ -36,9 +35,13 @@ def verificar_credenciales(correo, dni):
         resultado = cursor.fetchone()
 
         if resultado:
+            # Verificar si el estado es 'matriculado' (estado está en la columna 5, índice 5)
+            estado = resultado[5]  # Columna estado, que es la 6ta (índice 5)
+            if estado.lower() != 'matriculado':  # Comparar sin importar mayúsculas
+                return {"message": "El usuario no está matriculado"}
             return {
                 "message": "Correo y DNI correctos",
-                "user_id": resultado[0],
+                "user_id": resultado[0],  # Suponiendo que 'codigo' es la PK y está en la columna 0
             }
         else:
             return {"message": "Correo o DNI incorrectos"}
@@ -46,6 +49,54 @@ def verificar_credenciales(correo, dni):
         return {"message": f"Error en la consulta: {err}"}
     finally:
         cursor.close()
+
+
+# Función para obtener las probabilidades de los candidatos
+def obtener_probabilidades():
+    cursor = conexion.cursor()
+
+    # Obtener la cantidad total de votos
+    total_votos_query = "SELECT SUM(cantidad_votaciones) FROM candidatos_fisi"
+    cursor.execute(total_votos_query)
+    total_votos = cursor.fetchone()[0] or 0  # Si no hay votos, el total será 0
+
+    if total_votos == 0:
+        return {"message": "No hay votos registrados"}
+
+    # Obtener las votaciones de cada candidato
+    candidatos_query = "SELECT id_candidato, nombre_candidato, cantidad_votaciones FROM candidatos_fisi"
+    cursor.execute(candidatos_query)
+    candidatos = cursor.fetchall()
+
+    probabilidades = []
+    for candidato in candidatos:
+        id_candidato, nombre_candidato, cantidad_votaciones = candidato
+        probabilidad = (cantidad_votaciones / total_votos) * 100  # Probabilidad en porcentaje
+        probabilidades.append({
+            "id_candidato": id_candidato,
+            "nombre_candidato": nombre_candidato,
+            "probabilidad": round(probabilidad, 2)  # Redondear a 2 decimales
+        })
+
+    cursor.close()
+
+    # Predicción del resultado
+    prediccion = None
+    if probabilidades:
+        # Ordenar candidatos por probabilidad en orden descendente
+        probabilidades.sort(key=lambda x: x['probabilidad'], reverse=True)
+        prediccion = probabilidades[0]  # El candidato con mayor probabilidad es el predicho
+
+    return {
+        "candidatos": probabilidades,
+        "prediccion": prediccion  # Candidato con mayor probabilidad
+    }
+
+@app.route('/probabilidades', methods=['GET'])
+def probabilidades():
+    resultado = obtener_probabilidades()
+    return jsonify(resultado)
+
 
 # Endpoint de login
 @app.route('/login', methods=['POST'])
