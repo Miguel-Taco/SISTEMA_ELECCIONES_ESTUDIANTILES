@@ -16,6 +16,10 @@ import { AuthContext } from '../services/AuthContext'; // Ruta correcta desde 'c
 import './Login.css';
 //logo fisi: https://sistemas.unmsm.edu.pe/site/images/logo-fisi-header-240x105.png
 const message = ['Usuario logueado correctamente', 'Error, Intente de nuevo'];
+import logoOnpe from '../imagenes/logo-onpe.png';
+import logoFisi from '../imagenes/logo-fisi-header-240x105.png';
+
+
 
 export default function Login() {
     const [openAlert, setOpenAlert] = useState(false);
@@ -97,8 +101,8 @@ export default function Login() {
                 <Typography component="h1" variant="h5">
                     Elecciones 2024
                 </Typography>
-                <div class="image">
-                    <img src="https://www.web.onpe.gob.pe/portal/imagenes/logo-onpe.png" class="img-responsive"/> 
+                <div className="image">
+                    <img src={logoOnpe} className="img-responsive" />
                 </div>
                 
                 <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
@@ -208,8 +212,8 @@ export default function Login() {
                     >
                         Iniciar Sesión
                     </Button>
-                    <div class="image1">
-                        <img src="https://sistemas.unmsm.edu.pe/site/images/logo-fisi-header-240x105.png" class="img-responsive"/>
+                    <div className="image1">
+                    <img src={logoFisi} className="img-responsive" />
                     </div>
                 </Box>
             </div>

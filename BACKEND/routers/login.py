@@ -1,14 +1,11 @@
 from flask import Flask, request, jsonify
 import mysql.connector
-from flask_cors import CORS  # Importar CORS
+from flask_cors import CORS
 
 app = Flask(__name__)
 
-# Habilitar CORS para todas las rutas
-CORS(app)  # Permite solicitudes desde cualquier origen
-
-# O, si prefieres habilitar CORS solo para tu frontend:
-# CORS(app, origins="http://localhost:5173")
+# Habilitar CORS
+CORS(app)
 
 # Conectar a la base de datos
 conexion = mysql.connector.connect(
@@ -19,72 +16,94 @@ conexion = mysql.connector.connect(
     port='3306'
 )
 
-# Función para verificar las credenciales
+# Verificar las credenciales
 def verificar_credenciales(correo, dni):
-    # Crear un cursor para ejecutar la consulta
     cursor = conexion.cursor()
-
-    # Limpiar el correo (eliminar posibles espacios al principio y al final)
     correo = correo.strip()
-
-    # Asegurarse de que el DNI sea un número entero
+    
     try:
         dni = int(dni)
     except ValueError:
         return {"message": "El DNI debe ser un número válido"}
 
-    # Imprimir los parámetros que estamos usando en la consulta
-    print(f"Ejecutando consulta con: correo = {correo}, dni = {dni}")  # Depuración
-
-    # Consulta SQL para verificar el correo y DNI
     query = """
     SELECT * FROM estudiantes_fisi
     WHERE correo LIKE %s AND dni = %s
     """
 
     try:
-        # Ejecutar la consulta pasando los parámetros de forma segura
         cursor.execute(query, ('%' + correo + '%', dni))
-
-        # Obtener el primer resultado
         resultado = cursor.fetchone()
 
         if resultado:
-            # Si se encontró el registro, la autenticación es exitosa
-            print("Credenciales correctas.")  # Depuración
             return {
                 "message": "Correo y DNI correctos",
-                "user_id": resultado[0],  # Asumiendo que el ID de usuario está en la primera columna
+                "user_id": resultado[0],
             }
         else:
-            # Si no se encuentra el registro o las credenciales son incorrectas
-            print("No se encontró el registro en la base de datos.")  # Depuración
             return {"message": "Correo o DNI incorrectos"}
     except mysql.connector.Error as err:
-        print(f"Error en la consulta: {err}")  # Depuración
         return {"message": f"Error en la consulta: {err}"}
     finally:
-        # Cerrar el cursor
         cursor.close()
 
-# Endpoint para el login
+# Endpoint de login
 @app.route('/login', methods=['POST'])
 def login():
-    # Obtener datos del formulario
     correo = request.form.get('username')
     dni = request.form.get('password')
-
-    print(f"Correo recibido: {correo}, DNI recibido: {dni}")  # Agregar para depuración
 
     if not correo or not dni:
         return jsonify({"message": "Correo y DNI son necesarios"}), 400
 
-    # Verificar las credenciales
     resultado = verificar_credenciales(correo, dni)
-
-    print(f"Resultado de la verificación: {resultado}")  # Depuración
-
     return jsonify(resultado)
+
+# Endpoint de votación
+@app.route('/votar', methods=['POST'])
+def votar():
+    user_id = request.json.get('user_id')  # Recibe el user_id (código del estudiante)
+    id_candidato = request.json.get('id_candidato')  # Recibe el id_candidato seleccionado
+
+    if not user_id or not id_candidato:
+        return jsonify({"message": "user_id y id_candidato son necesarios"}), 400
+
+    cursor = conexion.cursor()
+
+    try:
+        # Verificar si el estudiante ya ha votado
+        check_voto_query = """
+        SELECT voto FROM estudiantes_fisi WHERE codigo = %s
+        """
+        cursor.execute(check_voto_query, (user_id,))
+        voto = cursor.fetchone()
+
+        if voto and voto[0] == 1:
+            return jsonify({"message": "Ya has votado previamente. No puedes votar nuevamente."}), 400
+
+        # Actualizar el voto del estudiante
+        update_estudiante_query = """
+        UPDATE estudiantes_fisi
+        SET voto = 1, id_candidato = %s
+        WHERE codigo = %s
+        """
+        cursor.execute(update_estudiante_query, (id_candidato, user_id))
+
+        # Incrementar las votaciones del candidato
+        update_candidato_query = """
+        UPDATE candidatos_fisi
+        SET cantidad_votaciones = cantidad_votaciones + 1
+        WHERE id_candidato = %s
+        """
+        cursor.execute(update_candidato_query, (id_candidato,))
+
+        # Confirmar los cambios
+        conexion.commit()
+        return jsonify({"message": "Voto registrado correctamente"})
+    except mysql.connector.Error as err:
+        return jsonify({"message": f"Error al registrar el voto: {err}"}), 500
+    finally:
+        cursor.close()
 
 if __name__ == '__main__':
     app.run(debug=True)

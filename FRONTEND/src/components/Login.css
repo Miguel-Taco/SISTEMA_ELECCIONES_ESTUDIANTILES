@@ -1,3 +1,4 @@
+
 /* Estilos generales para la aplicación */
 body {
     overflow-y: hidden;
@@ -7,7 +8,7 @@ body {
     height: 100vh;
     margin: 0;
     padding: 0;
-    background-image: url('https://sum.unmsm.edu.pe/assets/img/sliders/capacitacion2.jpg');
+    background-image: url('/imagenes/fondo.jpg');
     background-attachment: fixed;
     background-clip: border-box;
     background-color: rgba(0, 0, 0, 0);
