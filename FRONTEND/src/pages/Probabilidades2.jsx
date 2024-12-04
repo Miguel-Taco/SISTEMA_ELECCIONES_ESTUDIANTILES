@@ -2,9 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Network } from 'vis-network/standalone'; // Cambiar la importación
 import 'vis-network/styles/vis-network.css'; // Asegúrate de importar los estilos necesarios
-import CODIGO_FISIANO_LOGO from "../imagenes/CODIGO_FISIANO.png";
-import HAGAMOS from "../imagenes/HAGAMOS.png";
-import INNOVA from "../imagenes/INOVA_FISI.png";
 import ONPE from "../imagenes/logo-onpe.png";
 
 const Probabilidades2 = () => {

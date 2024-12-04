@@ -3,9 +3,6 @@ import { Link } from "react-router-dom";
 import { Bar } from "react-chartjs-2"; // Importamos el componente Bar de react-chartjs-2
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 import "./Probabilidades1.css";
-import CODIGO_FISIANO_LOGO from "../imagenes/CODIGO_FISIANO.png";
-import HAGAMOS from "../imagenes/HAGAMOS.png";
-import INNOVA from "../imagenes/INOVA_FISI.png";
 import ONPE from "../imagenes/logo-onpe.png";
 
 // Registrar los componentes de Chart.js

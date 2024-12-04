@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 import mysql.connector
 from flask_cors import CORS
-
+#ACTUAL
 app = Flask(__name__)
 
 # Habilitar CORS
@@ -120,7 +120,6 @@ def votar():
         return jsonify({"message": "user_id y id_candidato son necesarios"}), 400
 
     cursor = conexion.cursor()
-
     try:
         # Verificar si el estudiante ya ha votado
         check_voto_query = """
@@ -129,8 +128,20 @@ def votar():
         cursor.execute(check_voto_query, (user_id,))
         voto = cursor.fetchone()
 
+        # Obtener el nombre del candidato
+        candidato_query = "SELECT nombre_candidato FROM candidatos_fisi WHERE id_candidato = %s"
+        cursor.execute(candidato_query, (id_candidato,))
+        candidato = cursor.fetchone()
+
+        if not candidato:
+            return jsonify({"message": "Candidato no encontrado"}), 404
+
+        nombre_candidato = candidato[0]
+
         if voto and voto[0] == 1:
-            return jsonify({"message": "Ya has votado previamente. No puedes votar nuevamente."}), 400
+            return jsonify({"message": "Ya has votado previamente. No puedes votar nuevamente.", 
+                            "user_id": user_id, 
+                            "nombre_candidato": nombre_candidato}), 400
 
         # Actualizar el voto del estudiante
         update_estudiante_query = """
@@ -150,11 +161,53 @@ def votar():
 
         # Confirmar los cambios
         conexion.commit()
-        return jsonify({"message": "Voto registrado correctamente"})
+
+        return jsonify({"message": "Voto registrado correctamente", 
+                        "user_id": user_id, 
+                        "nombre_candidato": nombre_candidato})
     except mysql.connector.Error as err:
         return jsonify({"message": f"Error al registrar el voto: {err}"}), 500
     finally:
         cursor.close()
+
+
+# Endpoint para obtener la relación entre el estudiante y el candidato
+@app.route('/relacion_voto', methods=['GET'])
+def obtener_relacion_voto():
+    user_id = request.args.get('user_id')  # Recibe el user_id (código del estudiante)
+
+    if not user_id:
+        return jsonify({"message": "El user_id es necesario"}), 400
+
+    cursor = conexion.cursor()
+    try:
+        # Obtener los datos del estudiante y el candidato votado
+        query = """
+        SELECT e.codigo, e.nombres, e.apellidos, c.nombre_candidato
+        FROM estudiantes_fisi e
+        JOIN candidatos_fisi c ON e.id_candidato = c.id_candidato
+        WHERE e.codigo = %s AND e.voto = 1
+        """
+        cursor.execute(query, (user_id,))
+        resultado = cursor.fetchone()
+
+        if not resultado:
+            return jsonify({"message": "El estudiante no ha votado o no existe"}), 404
+
+        # Desestructurar los resultados
+        codigo, nombres, apellidos, nombre_candidato = resultado
+
+        return jsonify({
+            "codigo": codigo,
+            "nombres": nombres + " " + apellidos,  # Concatenar nombres y apellidos
+            "nombre_candidato": nombre_candidato
+        })
+    except mysql.connector.Error as err:
+        return jsonify({"message": f"Error en la consulta: {err}"}), 500
+    finally:
+        cursor.close()
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

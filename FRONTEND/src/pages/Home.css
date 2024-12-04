@@ -95,7 +95,7 @@
 
 /* Imagen Innova */
 .card-logo_idea {
-    width: 170px;  /* Tamaño estándar */
+    width: 220px;  /* Tamaño estándar */
     height: auto;  /* Mantener la proporción */
     margin-bottom: 10px;  /* Separar la imagen del texto */
     margin-top: center;  /* Mover hacia arriba */
@@ -166,3 +166,68 @@
     color: red;
     font-weight: bold;
 }
+
+.card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px; /* Bordes más redondeados para un efecto más suave */
+    padding: 30px; /* Aumenta el espacio interno de la tarjeta */
+    margin-top: 30px; /* Añade un poco más de separación arriba */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Sombra más pronunciada para darle profundidad */
+    width: 80%; /* Establece el ancho de la tarjeta a un 80% de la pantalla */
+    margin-left: auto; /* Centra la tarjeta horizontalmente */
+    margin-right: auto; /* Centra la tarjeta horizontalmente */
+  }
+  
+  .relacion-voto-content {
+    display: flex;
+    justify-content: space-between; /* Distribuye el espacio entre las columnas */
+    gap: 40px; /* Añade un espacio adicional entre las dos columnas */
+  }
+  
+  .left-column {
+    flex: 1;
+    padding-right: 20px;
+    font-size: 18px; /* Tamaño de fuente más grande para mayor legibilidad */
+    line-height: 1.6; /* Aumenta la altura de línea para mejorar la lectura */
+  }
+  
+  .right-column {
+    flex: 1;
+    padding-left: 20px;
+    font-size: 18px; /* Tamaño de fuente más grande para mayor legibilidad */
+    line-height: 1.6; /* Aumenta la altura de línea para mejorar la lectura */
+  }
+  
+  strong {
+    font-weight: bold;
+    color: #333; /* Un color ligeramente más oscuro para los textos en negrita */
+  }
+  
+  
+
+  .Relacion {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    background-color: #007bff; /* Color de fondo */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+  }
+  
+  .Relacion:hover {
+    background-color: #0056b3; /* Cambia el fondo cuando el ratón está encima */
+    transform: scale(1.05); /* Aumenta ligeramente el tamaño */
+  }
+  
+  .Relacion.visible {
+    background-color: #28a745; /* Verde cuando la relación está visible */
+  }
+  
+  .Relacion:focus {
+    outline: none; /* Elimina el borde al hacer clic */
+  }
+  
