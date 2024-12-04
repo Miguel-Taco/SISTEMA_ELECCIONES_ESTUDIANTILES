@@ -6,14 +6,14 @@ app = Flask(__name__)
 
 # Habilitar CORS
 CORS(app)
-
+#deploy base de datos xhOoeGdxwdVhWEJpxVymzEybmhSmEdFv autorack.proxy.rlwy.net 31004
 # Conectar a la base de datos
 conexion = mysql.connector.connect(
     user='root',
-    password='root',
-    host='localhost',
+    password='xhOoeGdxwdVhWEJpxVymzEybmhSmEdFv',
+    host='autorack.proxy.rlwy.net',
     database='elecciones',
-    port='3306'
+    port='31004'
 )
 
 def verificar_credenciales(correo, dni):
